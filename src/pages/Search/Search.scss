@@ -1,0 +1,35 @@
+.searchPageWrapper {
+  padding: 60px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 60px;
+  .searchTop {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.searchProducts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 50px;
+}
+.searchProductsList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 26px;
+  row-gap: 50px;
+  width: 100%;
+  justify-content: flex-start;
+  margin: auto 0;
+  //   width: 100%;
+  //   display: grid;
+  //   gap: 30px;
+  //   grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
+}

@@ -1,0 +1,192 @@
+
+const [formTwoSearch, modify_formTwoSearch] = useState("");
+const [isModalShowing, setIsModalShowing] = useState(false);
+
+const data = ["One", "Two", "Three", "Four"];
+
+const handleChange = (value:any) => console.log(value);
+const onToggleChange = (status) => console.log({ toggle: status });
+
+const formOneSubmitter = ({ event }: any) => {
+  console.log("Form One can be submitted");
+  event.preventDefault();
+};
+
+const formTwoSubmitter = ({ event }: any) => {
+  console.log("Form Two can be submitted");
+  event.preventDefault();
+};
+
+
+<>
+
+
+  <FormWrapper onSubmit={formOneSubmitter} title="Form One">
+
+    <CustomSelect
+      data={data}
+      title="Select number of bedrooms"
+      onSelectChange={(event: { target: { value: any; }; }) => console.log(`Got ${event.target.value}`)}
+    />
+
+    <FormInput title="First Name" type={"text"} onChange={handleChange} autocomplete={"given-name"} />
+
+    <FormInput title="Last Name" type={"text"} onChange={handleChange} autocomplete={"family-name"} />
+
+    <FormInput title="Email address" type={"email"} onChange={handleChange} autocomplete={false} />
+
+    <FormInput title="Enter password" type={"password"} onChange={handleChange} />
+
+
+
+    <BlueButton type="submit" > Submit data </BlueButton>
+
+    &nbsp;
+
+  </FormWrapper>
+
+  <FormWrapper onSubmit={formTwoSubmitter} title="Form Two">
+    <SearchBar
+      placeHolder="Find a house near me"
+      onSearch={(searchTerm: React.SetStateAction<string>) => modify_formTwoSearch(searchTerm)}
+    />
+
+    &nbsp;
+
+    <BlueButton type="submit" > Search </BlueButton>
+
+    &nbsp;
+
+    <BlueButton type="reset" variant="warning" size={"sm"} onClick={() => modify_formTwoSearch("")}> Clear Form </BlueButton>
+
+    {formTwoSearch && (
+      <p>
+        Searching for "<b>{formTwoSearch}</b>"
+      </p>
+    )}
+  </FormWrapper>
+
+  <>
+    <BlueButton onClick={() => setIsModalShowing(true)}>View modal</BlueButton>
+    <Modal isShowing={isModalShowing} onClose={() => setIsModalShowing(false)}>
+      <h3>About this app</h3>
+      <p> Try creating reusable components now!.</p>
+      <BlueButton>
+        <a href="https://blog.logrocket.com/author/daggieblanqx/">
+          See more articles
+        </a>
+      </BlueButton>
+      &nbsp;
+      <BlueButton onClick={() => setIsModalShowing(false)}>Close Modal</BlueButton>
+    </Modal>
+  </>
+</>
+
+
+
+
+
+const mockProductItems = {
+  currentPage: 1,
+  itemsPerPage: 6,
+  totalItems: 12,
+  totalPages: Math.ceil(12 / 6),
+  items: [
+    {
+      id: 1,
+      name: "245/45R19 SC-5 CONTI",
+      brand: "Continental",
+      category: "Goma",
+      price: "112.50€/copë",
+      image: guma,
+    },
+    {
+      id: 2,
+      name: "255/40R20 PZ4 SPORT",
+      brand: "Pirelli",
+      category: "Goma",
+      price: "150.00€/copë",
+      image: guma,
+    },
+    {
+      id: 3,
+      name: "225/50R17 TURANZA T005",
+      brand: "Bridgestone",
+      category: "Goma",
+      price: "95.75€/copë",
+      image: guma,
+    },
+    {
+      id: 4,
+      name: "245/45R19 SC-5 CONTI",
+      brand: "Continental",
+      category: "Goma",
+      price: "112.50€/copë",
+      image: guma,
+    },
+    {
+      id: 5,
+      name: "255/40R20 PZ4 SPORT",
+      brand: "Pirelli",
+      category: "Goma",
+      price: "150.00€/copë",
+      image: guma,
+    },
+    {
+      id: 6,
+      name: "225/50R17 TURANZA T005",
+      brand: "Bridgestone",
+      category: "Goma",
+      price: "95.75€/copë",
+      image: guma,
+    },
+    {
+      id: 7,
+      name: "245/45R19 SC-5 CONTI",
+      brand: "Continental",
+      category: "Goma",
+      price: "112.50€/copë",
+      image: guma,
+    },
+    {
+      id: 8,
+      name: "255/40R20 PZ4 SPORT",
+      brand: "Pirelli",
+      category: "Goma",
+      price: "150.00€/copë",
+      image: guma,
+    },
+    {
+      id: 9,
+      name: "225/50R17 TURANZA T005",
+      brand: "Bridgestone",
+      category: "Goma",
+      price: "95.75€/copë",
+      image: guma,
+    },
+    {
+      id: 10,
+      name: "245/45R19 SC-5 CONTI",
+      brand: "Continental",
+      category: "Goma",
+      price: "112.50€/copë",
+      image: guma,
+    },
+    {
+      id: 11,
+      name: "255/40R20 PZ4 SPORT",
+      brand: "Pirelli",
+      category: "Goma",
+      price: "150.00€/copë",
+      image: guma,
+    },
+    {
+      id: 12,
+      name: "page2",
+      brand: "Bridgestone",
+      category: "Goma",
+      price: "95.75€/copë",
+      image: guma,
+    },
+  ],
+};

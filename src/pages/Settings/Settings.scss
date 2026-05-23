@@ -1,0 +1,73 @@
+.account-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.account-information {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0px 40px;
+  gap: 30px;
+}
+
+.account-details-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  .account-main {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex-direction: row;
+    .account-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 80px;
+    }
+  }
+  .account-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
+
+.qr {
+  width: 100px;
+  height: 100px;
+}
+
+.account-update-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  width: 450px;
+  .account-form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+  }
+}
+
+.account-update-buttons {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+}
+
+.customFileInput {
+  width: 250px;
+  img {
+    width: 100%;
+  }
+}

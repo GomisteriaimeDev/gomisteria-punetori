@@ -1,0 +1,61 @@
+// styles/Table.scss
+.table-container {
+  width: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 30px 0px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 40px;
+  background: white;
+  width: 100%;
+  border-bottom: 1px solid #d9d9d9;
+  .table-cell {
+    color: var(--Text-Color, #7b7b7b);
+
+    /* Small Paragraph */
+    font-family: Chillax;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 128.571% */
+  }
+}
+
+.table-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  width: 100%;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.table-cell {
+  color: #1b2443;
+  font-size: 14px;
+  font-family: "Chillax", sans-serif;
+  width: 100%;
+  line-height: 18px;
+  word-wrap: break-word;
+}
+
+
+.no-results {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+  color: #999;
+}

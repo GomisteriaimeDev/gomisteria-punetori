@@ -60,6 +60,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem("userId", decodedToken.sub);
         localStorage.setItem("isAuthenticated", "true");
 
+        // Load the full user (name + profile image) right away so the UI is
+        // populated without needing a page reload.
+        try {
+          const userData = await getUserById(
+            decodedToken.sub,
+            response.data.access_token
+          );
+          setCurrentUser(userData);
+        } catch (e) {
+          console.error("Failed to load user after login:", e);
+        }
+
+        setSessionTimeout(decodedToken.exp);
         setIsAuthenticated(true);
         navigate("/statistics");
       } catch (error) {

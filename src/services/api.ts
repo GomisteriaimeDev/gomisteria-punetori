@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const token = localStorage.getItem('token');
 const axiosInstance = axios.create({
   baseURL: 'https://gomisteria-api.onrender.com/api',
-  headers: {
-    'Authorization': `Bearer ${token}`,
+});
+
+// Attach the *current* token on every request instead of baking it in once at
+// module load. Otherwise the token captured at startup (null on the login page)
+// sticks around and every authenticated request fails until a full page reload.
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
 });
 
 type FetchFunction<T, Args extends any[]> = (...args: Args) => Promise<T>;
@@ -76,7 +83,7 @@ export const updateOrderStatus = async (orderId: any, newStatus: any) => {
       `/orders/${orderId}/status`,
       { newStatus },
       {
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' }
       }
     );
     return response.data;

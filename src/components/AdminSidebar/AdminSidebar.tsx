@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import "./AdminSidebar.scss";
 import logo from "../../assets/svg/Logo.svg";
 import user from "../../assets/images/user.jpeg";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 const AdminSidebar = () => {
   const { logout, currentUser } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  console.log();
 
   const isActive = (path: string) => {
     return location.pathname === path ? "active" : "";
@@ -16,7 +15,6 @@ const AdminSidebar = () => {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
-  console.log(currentUser);
   return (
     <div className={`sidebarWrapper ${isOpen ? "open" : ""}`}>
       <div className="sidebarLogo">
@@ -50,8 +48,8 @@ const AdminSidebar = () => {
           </div>
         </div>
         <nav>
-          <a
-            href="/statistics"
+          <Link
+            to="/statistics"
             className={`navItem ${isActive("/statistics")}`}
           >
             <svg
@@ -80,8 +78,8 @@ const AdminSidebar = () => {
               </defs>
             </svg>
             Statistika
-          </a>
-          <a href="/sales" className={`navItem ${isActive("/sales")}`}>
+          </Link>
+          <Link to="/sales" className={`navItem ${isActive("/sales")}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -95,10 +93,10 @@ const AdminSidebar = () => {
               />
             </svg>
             Shitjet
-          </a>
+          </Link>
 
           <div className="sidebarDivider" />
-          <a href="/settings" className={`navItem ${isActive("/settings")}`}>
+          <Link to="/settings" className={`navItem ${isActive("/settings")}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -129,7 +127,7 @@ const AdminSidebar = () => {
               </defs>
             </svg>
             Konfigurimet
-          </a>
+          </Link>
           <div className="navItemRed" onClick={logout}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

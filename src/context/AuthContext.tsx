@@ -9,7 +9,7 @@ import React, {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { getUserById } from "../services/api";
+import { getUserProfile } from "../services/api";
 
 interface AuthContextType {
   currentUser: any;
@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Load the full user (name + profile image) right away so the UI is
         // populated without needing a page reload.
         try {
-          const userData = await getUserById(
+          const userData = await getUserProfile(
             decodedToken.sub,
             response.data.access_token
           );
@@ -133,7 +133,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         logout();
       } else {
         setSessionTimeout(decodedToken.exp);
-        getUserById(decodedToken.sub, token)
+        getUserProfile(decodedToken.sub, token)
           .then((userData) => {
             setCurrentUser(userData);
             setIsAuthenticated(true);

@@ -54,6 +54,15 @@ export const getUserById = async (id: any, token: any): Promise<any> => {
   });
   return response?.data ?? null;
 };
+
+// Lightweight profile fetch for the auth bootstrap. Avoids the heavy
+// relational graph that getUserById loads, keeping login fast under load.
+export const getUserProfile = async (id: any, token: any): Promise<any> => {
+  const response = await axios.get(`https://gomisteria-api.onrender.com/api/users/${id}/profile`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+  });
+  return response?.data ?? null;
+};
 /**
  * * Sales
  */

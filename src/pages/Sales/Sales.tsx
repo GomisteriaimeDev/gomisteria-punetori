@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import Dashboard from "../../layouts/Dashboard";
 import "./Sales.scss";
 import FilterDropdown from "../../components/FilterDropdown/FilterDropdown";
-import useFetchData, { getOrders } from "../../services/api";
+import { getOrdersAssignedToEmployee } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import formatDate from "../../utils/FormatDate";
@@ -26,9 +26,28 @@ const Sales = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
-  // Keeping your fetch hook in case the page depends on it elsewhere
-  // (You can remove it if OrdersAssigned is always sufficient.)
-  useFetchData(getOrders);
+  // Orders assigned to this employee are fetched directly (the auth/profile
+  // payload no longer carries the full order graph).
+  const [assignedOrders, setAssignedOrders] = useState<any[]>([]);
+
+  useEffect(() => {
+    const employeeId = currentUser?.id;
+    if (!employeeId) return;
+
+    let cancelled = false;
+    getOrdersAssignedToEmployee(employeeId)
+      .then((orders) => {
+        if (!cancelled) setAssignedOrders(Array.isArray(orders) ? orders : []);
+      })
+      .catch((err) => {
+        console.error("Failed to load assigned orders:", err);
+        if (!cancelled) setAssignedOrders([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUser?.id]);
 
   // Dropdown stores selected status VALUE (ALL/CREATED/...)
   const [selectedStatus, setSelectedStatus] = useState<OrderStatusValue>("ALL");
@@ -62,11 +81,6 @@ const Sales = () => {
         return <span className="status-dot unknown"></span>;
     }
   };
-
-  const assignedOrders = useMemo(
-    () => currentUser?.OrdersAssigned ?? [],
-    [currentUser]
-  );
 
   // ALWAYS sort by newest createdAt, THEN filter by selected status
   const sortedAndFilteredOrders = useMemo(() => {

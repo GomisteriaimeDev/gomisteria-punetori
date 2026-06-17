@@ -76,6 +76,12 @@ export const getOrdersByUserId = async (id: any, page?: number, limit?: number):
   return response?.data ?? null;
 };
 
+// Orders assigned to the logged-in employee (Sales page). Returns a flat array.
+export const getOrdersAssignedToEmployee = async (employeeId: any): Promise<any> => {
+  const response = await axiosInstance.get(`/orders/assigned/${employeeId}`);
+  return response?.data ?? [];
+};
+
 export const getOrderById = async (id: any): Promise<any> => {
   const response = await axiosInstance.get(`/orders/${id}`);
   return response?.data ?? null;

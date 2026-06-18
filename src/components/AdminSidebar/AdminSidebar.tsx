@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./AdminSidebar.scss";
 import logo from "../../assets/svg/Logo.svg";
-import user from "../../assets/images/user.jpeg";
+import user from "../../assets/svg/defaultUser.svg";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 const AdminSidebar = () => {

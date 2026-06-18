@@ -5,6 +5,7 @@ import FormInput from "../../components/FormInput/FormInput";
 import OutlineButton from "../../components/OutlineButton/OutlineButton";
 import { useAuth } from "../../context/AuthContext";
 import Dashboard from "../../layouts/Dashboard";
+import defaultUser from "../../assets/svg/defaultUser.svg";
 
 type FormValues = {
   fullName: string;
@@ -141,17 +142,11 @@ const Settings: React.FC = () => {
             <div className="account-details-wrapper">
               <div className="account-main">
                 <div className="account-image">
-                  {imagePreview ? (
-                    <img
-                      className="account-image"
-                      src={imagePreview}
-                      alt={formValues.fullName || "User"}
-                    />
-                  ) : (
-                    <div className="account-image-placeholder">
-                      {/* Optional placeholder if there is no image */}
-                    </div>
-                  )}
+                  <img
+                    className="account-image"
+                    src={imagePreview || defaultUser}
+                    alt={formValues.fullName || "User"}
+                  />
                 </div>
                 <BlueButton onClick={toggleEdit}>Ndrysho informatat</BlueButton>
               </div>

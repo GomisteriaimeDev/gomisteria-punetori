@@ -3,6 +3,8 @@ import React from "react";
 import "./App.scss";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login/Login";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import RedirectIfAuthenticated from "./utils/RedirectIfAuth";
 import Statistics from "./pages/Statistics/Statistics";
@@ -32,6 +34,22 @@ function App() {
             </RedirectIfAuthenticated>
           }
         /> */}
+        <Route
+          path="/forgot-password"
+          element={
+            <RedirectIfAuthenticated>
+              <ForgotPassword />
+            </RedirectIfAuthenticated>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <RedirectIfAuthenticated>
+              <ResetPassword />
+            </RedirectIfAuthenticated>
+          }
+        />
         <Route element={<ProtectedRoute />}>
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/sales" element={<Sales />} />

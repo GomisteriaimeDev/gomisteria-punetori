@@ -1,70 +1,78 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./ForgotPassword.scss";
 import logo from "../../assets/svg/Logo.svg";
 import FormWrapper from "../../components/Form/Form";
 import FormInput from "../../components/FormInput/FormInput";
 import BlueButton from "../../components/BlueButton/BlueButton";
+
 const ForgotPassword = () => {
-  const [modifiedData, setModifiedData] = useState({
-    password: "",
-    passwordConfirm: "",
-  });
-  const [error, setError] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = ({ event }: any) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const passwordsMatch =
-      modifiedData.password === modifiedData.passwordConfirm;
-    setPasswordError(!passwordsMatch);
+    if (isSubmitting) return;
+    setError(null);
 
-    if (!passwordsMatch) {
-      setError("Fjalëkalimet nuk përputhen. Ju lutemi provoni përsëri.");
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      setError("Ju lutem vendosni një email të vlefshëm.");
       return;
     }
 
-    setError("");
-  };
-
-  const handleChange = (event: any) => {
-    const { name, value } = event.target;
-    setModifiedData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    setError("");
+    setIsSubmitting(true);
+    try {
+      await axios.post(
+        "https://gomisteria-api.onrender.com/api/users/request-password-reset",
+        { email: email.trim() }
+      );
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Failed to request password reset:", err);
+      setError(
+        "Nuk mundëm të dërgojmë email-in e rivendosjes. Ju lutem provoni më vonë."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="forgotPasswordWrapper">
       <img src={logo} alt="gomisteriaLogo" />
-      <FormWrapper onSubmit={handleSubmit} title="Ndërroni Fjalëkalimin">
-        <div className="forgotPassword-inputs">
-          <FormInput
-            placeholder="Fjalëkalimi i ri"
-            type={"password"}
-            onChange={handleChange}
-            name="password"
-            isError={passwordError}
-          />
-          <FormInput
-            placeholder="Konfirmoni fjalëkalimin e ri "
-            type={"password"}
-            onChange={handleChange}
-            name="passwordConfirm"
-            isError={passwordError}
-          />
-        </div>
-        <BlueButton type="submit">Ndërro Fjalëkalimin</BlueButton>
-        {error && <p className="error-text">{error}</p>}
-      </FormWrapper>
-
-      <div className="forgotPassword-bottom">
-        <p>
-          Për çdo problem gjatë regjistrimit, ju lutemi kontaktoni qendrën e
-          thirrjeve +383 45 522 222
-        </p>
-      </div>
+      {submitted ? (
+        <FormWrapper title="Kontrolloni Email-in Tuaj">
+          <p>
+            Nëse ekziston një llogari me atë email, ne kemi dërguar një lidhje
+            për rivendosjen e fjalëkalimit.
+          </p>
+          <a href="/">Kthehu te Hyrja</a>
+        </FormWrapper>
+      ) : (
+        <FormWrapper onSubmit={handleSubmit} title="Keni Harruar Fjalëkalimin">
+          <p>
+            Vendosni email-in tuaj dhe ne do t'ju dërgojmë një lidhje për të
+            rivendosur fjalëkalimin.
+          </p>
+          <div className="forgotPassword-inputs">
+            <FormInput
+              placeholder="Email"
+              type={"email"}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              isError={!!error}
+            />
+          </div>
+          {error && <div className="error-message--global">{error}</div>}
+          <BlueButton type="submit">
+            {isSubmitting ? "Duke dërguar..." : "Dërgo Lidhjen"}
+          </BlueButton>
+          <a href="/">Kthehu te Hyrja</a>
+        </FormWrapper>
+      )}
     </div>
   );
 };

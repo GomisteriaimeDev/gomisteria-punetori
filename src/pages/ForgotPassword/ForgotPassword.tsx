@@ -9,14 +9,13 @@ import BlueButton from "../../components/BlueButton/BlueButton";
 const API = "https://gomisteria-api.onrender.com/api/users";
 const RESEND_SECONDS = 60;
 
-type Step = "phone" | "code" | "account" | "password" | "done";
-type Account = { token: string; email: string; name: string };
+type Step = "email" | "code" | "password" | "done";
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState<Step>("phone");
-  const [phone, setPhone] = useState("");
+  const [step, setStep] = useState<Step>("email");
+  const [email, setEmail] = useState("");
+  const [maskedPhone, setMaskedPhone] = useState("");
   const [code, setCode] = useState("");
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const [token, setToken] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -34,27 +33,35 @@ const ForgotPassword = () => {
     if (isSubmitting) return;
     setError(null);
 
-    if (phone.replace(/\D/g, "").length < 8) {
-      setError("Ju lutem vendosni një numër telefoni të vlefshëm.");
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      setError("Ju lutem vendosni një email të vlefshëm.");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await axios.post(`${API}/request-password-reset-sms`, {
-        phone: phone.trim(),
+      const res = await axios.post(`${API}/request-password-reset-sms`, {
+        email: email.trim(),
         portal: "punetori",
       });
+      setMaskedPhone(res?.data?.phone ?? "");
       setCode("");
       setResendIn(RESEND_SECONDS);
       setStep("code");
     } catch (err: any) {
       console.error("Failed to request SMS reset:", err);
-      setError(
-        err?.response?.status === 429
-          ? "Ju lutem prisni një minutë para se të kërkoni një kod të ri."
-          : "Nuk mundëm të dërgojmë SMS-në. Ju lutem provoni më vonë."
-      );
+      const errorCode = err?.response?.data?.code;
+      if (errorCode === "RESET_EMAIL_NOT_FOUND") {
+        setError("Nuk ka asnjë llogari me këtë email.");
+      } else if (errorCode === "RESET_NO_PHONE") {
+        setError(
+          "Kjo llogari nuk ka numër telefoni. Ju lutem kontaktoni administratorin."
+        );
+      } else if (err?.response?.status === 429) {
+        setError("Ju lutem prisni një minutë para se të kërkoni një kod të ri.");
+      } else {
+        setError("Nuk mundëm të dërgojmë SMS-në. Ju lutem provoni më vonë.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -72,18 +79,12 @@ const ForgotPassword = () => {
     setIsSubmitting(true);
     try {
       const res = await axios.post(`${API}/verify-reset-code`, {
-        phone: phone.trim(),
+        email: email.trim(),
         portal: "punetori",
         code: code.trim(),
       });
-      const found: Account[] = res?.data?.accounts ?? [];
-      if (found.length === 1) {
-        setToken(found[0].token);
-        setStep("password");
-      } else {
-        setAccounts(found);
-        setStep("account");
-      }
+      setToken(res?.data?.token ?? null);
+      setStep("password");
     } catch (err) {
       console.error("Failed to verify reset code:", err);
       setError(
@@ -131,19 +132,19 @@ const ForgotPassword = () => {
     <div className="forgotPasswordWrapper">
       <img src={logo} alt="gomisteriaLogo" />
 
-      {step === "phone" && (
+      {step === "email" && (
         <FormWrapper onSubmit={sendCode} title="Keni Harruar Fjalëkalimin">
           <p>
-            Vendosni numrin e telefonit të llogarisë suaj dhe ne do t'ju
-            dërgojmë një kod me SMS.
+            Vendosni email-in e llogarisë suaj dhe ne do t'ju dërgojmë një kod
+            me SMS në numrin e telefonit të llogarisë.
           </p>
           <div className="forgotPassword-inputs">
             <FormInput
-              placeholder="Numri i telefonit (p.sh. 045 123 456)"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              name="phone"
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              name="email"
               isError={!!error}
             />
           </div>
@@ -158,8 +159,8 @@ const ForgotPassword = () => {
       {step === "code" && (
         <FormWrapper onSubmit={verifyCode} title="Vendosni Kodin">
           <p>
-            Nëse ky numër i përket një llogarie, ne dërguam një kod me 6 shifra
-            në <strong>{phone}</strong>.
+            Ne dërguam një kod me 6 shifra me SMS në{" "}
+            <strong>{maskedPhone}</strong>.
           </p>
           <div className="forgotPassword-inputs">
             <FormInput
@@ -191,40 +192,15 @@ const ForgotPassword = () => {
             </a>
           )}
           <a
-            href="#change-number"
+            href="#change-email"
             onClick={(e) => {
               e.preventDefault();
               setError(null);
-              setStep("phone");
+              setStep("email");
             }}
           >
-            Ndrysho numrin
+            Përdor një email tjetër
           </a>
-        </FormWrapper>
-      )}
-
-      {step === "account" && (
-        <FormWrapper title="Zgjidhni Llogarinë">
-          <p>
-            Ky numër përdoret nga më shumë se një llogari. Cilën dëshironi të
-            rivendosni?
-          </p>
-          <div className="forgotPassword-inputs">
-            {accounts.map((account) => (
-              <BlueButton
-                key={account.token}
-                type="button"
-                onClick={() => {
-                  setToken(account.token);
-                  setStep("password");
-                }}
-              >
-                {account.name ? `${account.name} · ` : ""}
-                {account.email}
-              </BlueButton>
-            ))}
-          </div>
-          <a href="/">Kthehu te Hyrja</a>
         </FormWrapper>
       )}
 
